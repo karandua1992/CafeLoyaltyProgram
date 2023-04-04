@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ie.tcd.cafeapp.collection.CreateCustomerPojo;
 import ie.tcd.cafeapp.collection.Customer;
 import ie.tcd.cafeapp.collection.LoginDetails;
+import ie.tcd.cafeapp.collection.ResponsePojo;
 import ie.tcd.cafeapp.repository.CustomerRepository;
 
 @Service
@@ -17,21 +18,23 @@ public class CreateCustomerServiceImpl implements CreateCustomerService
 	private CustomerRepository customerRepository;
 	
 	@Override
-	public String createCustomer(CreateCustomerPojo customer) 
+	public ResponsePojo createCustomer(CreateCustomerPojo customer) 
 	{
 		Customer newCustomer = new Customer();
 		LoginDetails credentials = new LoginDetails();
-		
+		ResponsePojo response = new ResponsePojo();
 		
 		
 		if(customer == null)
 		{
-			return "Invalid Details. Mandatory paramteres are empty";
+			response.setResponseMessage("Invalid Details. Mandatory paramteres are empty");
+			return response;
 		}
 		
 		if(checkUsernameExists(customer))
 		{
-			return "Invalid Details. Username already exists";
+			response.setResponseMessage("Invalid Details. Username already exists");
+			return response;
 		}
 		
 		if(customer.getFirstName() != null && !customer.getFirstName().isEmpty())
@@ -40,7 +43,8 @@ public class CreateCustomerServiceImpl implements CreateCustomerService
 		}
 		else
 		{
-			return "Invalid Details. First name cannot be empty";
+			response.setResponseMessage("Invalid Details. First name cannot be empty");
+			return response;
 		}
 		
 		if(customer.getLastName() != null && !customer.getLastName().isEmpty())
@@ -55,7 +59,8 @@ public class CreateCustomerServiceImpl implements CreateCustomerService
 		}
 		else
 		{
-			return "Invalid Details. Username cannot be empty";
+			response.setResponseMessage("Invalid Details. Username cannot be empty");
+			return response;
 		}
 		
 		if(customer.getLoginCredentials() != null && customer.getLoginCredentials().getPassword() != null && !customer.getLoginCredentials().getPassword().isEmpty())
@@ -64,35 +69,49 @@ public class CreateCustomerServiceImpl implements CreateCustomerService
 		}
 		else
 		{
-			return "Invalid Details. Password cannot be empty";
+			response.setResponseMessage("Invalid Details. Password cannot be empty");
+			return response;
 		}
 		
 		
 		newCustomer.setLoginCredentials(credentials);
+		newCustomer.setRewardPoints(1000);
 		
+		String membershipId = customerRepository.save(newCustomer).getMembershipId();
 		
-		return customerRepository.save(newCustomer).getMembershipId();
+		if(membershipId != null && !membershipId.isEmpty())
+		{
+			response.setResponseMessage("Dear " + newCustomer.getFirstName() + " " + newCustomer.getLastName() + ", "
+					+ "You have successfully joined our Loyalty Customer Program. "
+					+ "Your Username is: " + newCustomer.getLoginCredentials().getUsername() + " and your membership id is: " + membershipId);
+			return response;
+		}
+		else
+		{
+			response.setResponseMessage("Some error occured. Please try later.");
+		}
+		return response;
 	}
 
 	private boolean checkUsernameExists(CreateCustomerPojo customer) 
 	{
 		List<Customer> allCustomers = customerRepository.findAll();
 		
-		if(allCustomers != null)
+		if(allCustomers != null && !allCustomers.isEmpty())
 		{
 			for(Customer custr : allCustomers)
 			{
 				if(custr.getLoginCredentials() != null && custr.getLoginCredentials().getUsername() != null 
 						&& custr.getLoginCredentials().getUsername().equals(customer.getLoginCredentials().getUsername()))
 				{
-					return false;
+					return true;
 				}
 			}
-			return true;
+			return false;
 		}
 		else
 		{
-			return true;
+			return false;
 		}
 	}
 
