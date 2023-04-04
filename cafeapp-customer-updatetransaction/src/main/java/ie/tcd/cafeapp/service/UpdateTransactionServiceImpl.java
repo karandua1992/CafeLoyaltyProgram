@@ -53,7 +53,7 @@ public class UpdateTransactionServiceImpl implements UpdateTransactionService
 			
 			Integer currentRewardsPoints = customer.getRewardPoints();
 			
-			Integer newRewardsPoints = txnAmount.intValue()/10;
+			Integer newRewardsPoints = txnAmount.intValue();
 			
 			Integer updatedRewardPoints = currentRewardsPoints + newRewardsPoints;
 			
