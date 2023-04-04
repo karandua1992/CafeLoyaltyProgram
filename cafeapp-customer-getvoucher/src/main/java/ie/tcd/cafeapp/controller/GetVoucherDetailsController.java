@@ -16,11 +16,11 @@ import ie.tcd.cafeapp.service.GetVoucherDetailsService;
 public class GetVoucherDetailsController 
 {
 	@Autowired
-	private  GetVoucherDetailsService getVOucherDetailsService;
+	private  GetVoucherDetailsService getVoucherDetailsService;
 	
 	@PostMapping("/getvoucherdetails")
 	public ResponseEntity<?> getVoucherDetails(@RequestHeader Map<String, String> headers)
 	{
-		return ResponseEntity.ok(getVOucherDetailsService.getVocuherDetails(headers));
+		return ResponseEntity.ok(getVoucherDetailsService.getVocuherDetails(headers));
 	}
 }
