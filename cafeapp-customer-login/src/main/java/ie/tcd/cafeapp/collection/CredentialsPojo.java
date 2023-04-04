@@ -12,13 +12,13 @@ import lombok.ToString;
 @Setter
 @ToString
 public class CredentialsPojo {
-	private String membershipId;
+	private String username;
 	private String password;
-	public String getMembershipId() {
-		return membershipId;
+	public String getUsername() {
+		return username;
 	}
-	public void setMembershipId(String membershipId) {
-		this.membershipId = membershipId;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	public String getPassword() {
 		return password;
@@ -28,7 +28,9 @@ public class CredentialsPojo {
 	}
 	@Override
 	public String toString() {
-		return "CredentialsPojo [membershipId=" + membershipId + ", password=" + password + "]";
+		return "CredentialsPojo [username=" + username + ", password=" + password + "]";
 	}
+	
+	
 	
 }
