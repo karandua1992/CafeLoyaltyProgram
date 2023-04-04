@@ -16,6 +16,7 @@ public class ResponsePojo {
 	private String firstName;
 	private String lastName;
 	private Integer rewardPoints;
+	private String username;
 	
 	private List<TransactionHistory> transactionHistory;
 	
@@ -77,11 +78,19 @@ public class ResponsePojo {
 		this.voucher = voucher;
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
 	@Override
 	public String toString() {
 		return "ResponsePojo [responseMessage=" + responseMessage + ", membershipId=" + membershipId + ", firstName="
-				+ firstName + ", lastName=" + lastName + ", rewardPoints=" + rewardPoints + ", transactionHistory="
-				+ transactionHistory + ", voucher=" + voucher + "]";
+				+ firstName + ", lastName=" + lastName + ", rewardPoints=" + rewardPoints + ", username=" + username
+				+ ", transactionHistory=" + transactionHistory + ", voucher=" + voucher + "]";
 	}
 
 }

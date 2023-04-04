@@ -68,6 +68,7 @@ public class FetchDetailsServiceImpl implements FetchDetailsService {
 				response.setVoucher(customer.getVoucher());
 			}
 
+			response.setUsername(customer.getLoginCredentials().getUsername());
 			return response;
 
 		}
