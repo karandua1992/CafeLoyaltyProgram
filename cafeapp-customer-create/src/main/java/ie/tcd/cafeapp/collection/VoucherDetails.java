@@ -12,8 +12,11 @@ import lombok.ToString;
 @Setter
 @ToString
 public class VoucherDetails {
+	
 	private String voucherCode;
 	private String validTill;
+	private Double voucherAmount;
+	
 	public String getVoucherCode() {
 		return voucherCode;
 	}
@@ -26,8 +29,15 @@ public class VoucherDetails {
 	public void setValidTill(String validTill) {
 		this.validTill = validTill;
 	}
+	public Double getVoucherAmount() {
+		return voucherAmount;
+	}
+	public void setVoucherAmount(Double voucherAmount) {
+		this.voucherAmount = voucherAmount;
+	}
 	@Override
 	public String toString() {
-		return "VoucherDetails [voucherCode=" + voucherCode + ", validTill=" + validTill + "]";
+		return "VoucherDetails [voucherCode=" + voucherCode + ", validTill=" + validTill + ", voucherAmount="
+				+ voucherAmount + "]";
 	}
 }
