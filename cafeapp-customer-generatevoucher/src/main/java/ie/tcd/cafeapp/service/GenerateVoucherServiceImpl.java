@@ -64,21 +64,30 @@ public class GenerateVoucherServiceImpl implements GenerateVoucherService
 				UUID uuid = UUID.randomUUID();
 				VoucherDetails generatedVoucher = new VoucherDetails();
 				
-				Double voucherAmount = (double) (currentRewardPoints / 100);
-				Integer remainingRewardPoints = currentRewardPoints % 100;
-				
-
+				Double voucherAmount = 0.0;
+				Integer remainingRewardPoints = 0;
+				if(currentRewardPoints < 500)
+				{
+					voucherAmount = (double) (currentRewardPoints / 100);
+					remainingRewardPoints = currentRewardPoints % 100;
+				}
+				else
+				{
+					voucherAmount = 5.0;
+					remainingRewardPoints = currentRewardPoints - 500;
+				}
+			
 				LocalDateTime voucherValidTill = LocalDateTime.now().plusMonths(1);
-				
+
 				generatedVoucher.setVoucherCode(uuid.toString());
 				generatedVoucher.setValidTill(voucherValidTill.toString());
 				generatedVoucher.setVoucherAmount(voucherAmount);
-				
+
 				response.setGeneratedVoucher(generatedVoucher);
 				response.setRemainingRewardPoints(remainingRewardPoints);
-				
+
 				customer.setRewardPoints(remainingRewardPoints);
-				
+
 				List<VoucherDetails> vouchersList = customer.getVoucher();
 				if(vouchersList == null)
 				{
@@ -86,9 +95,9 @@ public class GenerateVoucherServiceImpl implements GenerateVoucherService
 				}
 				vouchersList.add(generatedVoucher);
 				customer.setVoucher(vouchersList);
-				
+
 				generateVoucherRepository.save(customer);
-				
+
 				return response;
 			}
 		}
