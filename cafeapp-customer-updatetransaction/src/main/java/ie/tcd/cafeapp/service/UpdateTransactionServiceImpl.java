@@ -83,7 +83,7 @@ public class UpdateTransactionServiceImpl implements UpdateTransactionService
 		}
 		else
 		{
-			response.setResponseMessage("User not found");
+			response.setResponseMessage("No session found for this user. To get seesion-id, please login into the app");
 			return response;
 		}
 
