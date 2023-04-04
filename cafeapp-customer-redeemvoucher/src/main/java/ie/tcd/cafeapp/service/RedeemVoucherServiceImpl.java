@@ -29,23 +29,27 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 		if(headers.get("session-id") == null || headers.get("session-id").isEmpty())
 		{
 			response.setResponseMessage("Invalid Details. Session-id cannot be empty. To get seesion-id, please login into the app");
+			response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
 			return response;
 		}
 		
 		if(transactionDetails.getTransactionAmount() == null)
 		{
 			response.setResponseMessage("Invalid Details. Transaction amount cannot be empty.");
+			response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
 			return response;
 		}
 		else if(transactionDetails.getTransactionAmount() == 0)
 		{
 			response.setResponseMessage("Invalid Details. Transaction amount cannot be 0.");
+			response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
 			return response;
 		}
 		
 		if(transactionDetails.getVoucherCode() == null || transactionDetails.getVoucherCode().isEmpty())
 		{
 			response.setResponseMessage("Invalid Details. Vocuher code cannot be empty.");
+			response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
 			return response;
 		}
 
@@ -58,12 +62,14 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 			if(!headers.get("session-id").equals(customer.getSessionDetails().getSessionId()))
 			{
 				response.setResponseMessage("Invalid session-id. To get seesion-id, please login into the app");
+				response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
 				return response;
 			}
 			
 			if(customer.getVoucher() == null || customer.getVoucher().isEmpty())
 			{
 				response.setResponseMessage("Customer does not have a voucher.");
+				response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
 				return response;
 			}
 			
@@ -85,9 +91,10 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 			
 			if(voucherFound)
 			{
-				if(voucherAmount > transactionDetails.getTransactionAmount())
+				if(voucherAmount >= transactionDetails.getTransactionAmount())
 				{
-					response.setResponseMessage("Voucher amount is greater than billing amount. Please try a differet voucher.");
+					response.setResponseMessage("Voucher amount is greater than or equal to billing amount. Please try a differet voucher.");
+					response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
 					return response;
 				}
 				
@@ -96,6 +103,7 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 				if(LocalDateTime.now().isAfter(voucherExpiryDate))
 				{
 					response.setResponseMessage("This voucher has expired. Please try a differet voucher.");
+					response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
 					return response;
 				}
 				
@@ -119,6 +127,7 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 			else
 			{
 				response.setResponseMessage("This is not a valid voucher. Please check vocuher details and try again.");
+				response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
 				return response;
 			}
 			
