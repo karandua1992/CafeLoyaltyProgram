@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ie.tcd.cafeapp.collection.CreateCustomerPojo;
 import ie.tcd.cafeapp.service.CreateCustomerService;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/cafeapp")
+@Slf4j
 public class CreateCustomerController 
 {
 	@Autowired
@@ -20,6 +22,7 @@ public class CreateCustomerController
 	@PostMapping("/create")
 	public ResponseEntity<?> cutomerLogin(@RequestBody CreateCustomerPojo customer)
 	{
+		log.info("Received customer creation request for customer:" + customer.getLoginCredentials().getUsername());
 		return ResponseEntity.ok(createCustomerService.createCustomer(customer));
 	}
 

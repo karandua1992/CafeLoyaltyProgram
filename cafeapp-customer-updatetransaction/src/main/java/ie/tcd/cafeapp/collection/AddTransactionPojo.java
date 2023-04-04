@@ -1,30 +1,18 @@
 package ie.tcd.cafeapp.collection;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Data
-@Builder
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class AddTransactionPojo {
 	
 	private Float transactionAmount;
-	
-	public Float getTransactionAmount() {
-		return transactionAmount;
-	}
-	public void setTransactionAmount(Float transactionAmount) {
-		this.transactionAmount = transactionAmount;
-	}
-	@Override
-	public String toString() {
-		return "AddTransactionPojo [transactionAmount=" + transactionAmount + "]";
-	}
-	
 	
 }
