@@ -1,7 +1,7 @@
 package ie.tcd.cafeapp.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +60,7 @@ public class UpdateTransactionServiceImpl implements UpdateTransactionService
 			customer.setRewardPoints(updatedRewardPoints);
 			
 			TransactionHistory currentTxn = new TransactionHistory();
-			currentTxn.setDate(new Date().toString());
+			currentTxn.setDate(LocalDateTime.now().toString());
 			currentTxn.setTransactionAmount(txnAmount);
 			
 			List<TransactionHistory> txnHist = customer.getTransactionHistory();

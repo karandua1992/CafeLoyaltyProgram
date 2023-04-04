@@ -27,7 +27,7 @@ public class Customer {
 	
 	private List<TransactionHistory> transactionHistory;
 	
-	private VoucherDetails voucher;
+	private List<VoucherDetails> voucher;
 
 	private Session sessionDetails;
 	
@@ -79,20 +79,20 @@ public class Customer {
 		this.transactionHistory = transactionHistory;
 	}
 
-	public VoucherDetails getVoucher() {
-		return voucher;
-	}
-
-	public void setVoucher(VoucherDetails voucher) {
-		this.voucher = voucher;
-	}
-
 	public Session getSessionDetails() {
 		return sessionDetails;
 	}
 
 	public void setSessionDetails(Session sessionDetails) {
 		this.sessionDetails = sessionDetails;
+	}
+
+	public List<VoucherDetails> getVoucher() {
+		return voucher;
+	}
+
+	public void setVoucher(List<VoucherDetails> voucher) {
+		this.voucher = voucher;
 	}
 
 	@Override

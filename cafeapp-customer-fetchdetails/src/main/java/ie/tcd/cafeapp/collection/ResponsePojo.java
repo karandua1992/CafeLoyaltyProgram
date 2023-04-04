@@ -19,7 +19,7 @@ public class ResponsePojo {
 	
 	private List<TransactionHistory> transactionHistory;
 	
-	private VoucherDetails voucher;
+	private List<VoucherDetails> voucher;
 
 	public String getResponseMessage() {
 		return responseMessage;
@@ -69,11 +69,11 @@ public class ResponsePojo {
 		this.transactionHistory = transactionHistory;
 	}
 
-	public VoucherDetails getVoucher() {
+	public List<VoucherDetails> getVoucher() {
 		return voucher;
 	}
 
-	public void setVoucher(VoucherDetails voucher) {
+	public void setVoucher(List<VoucherDetails> voucher) {
 		this.voucher = voucher;
 	}
 
