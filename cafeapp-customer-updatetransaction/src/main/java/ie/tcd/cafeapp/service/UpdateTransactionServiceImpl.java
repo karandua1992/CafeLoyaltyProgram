@@ -13,8 +13,10 @@ import ie.tcd.cafeapp.collection.Customer;
 import ie.tcd.cafeapp.collection.ResponsePojo;
 import ie.tcd.cafeapp.collection.TransactionHistory;
 import ie.tcd.cafeapp.repository.UpdateTransactionRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class UpdateTransactionServiceImpl implements UpdateTransactionService 
 {
 	
@@ -31,11 +33,12 @@ public class UpdateTransactionServiceImpl implements UpdateTransactionService
 			response.setResponseMessage("Invalid Details. Session-id cannot be empty. To get seesion-id, please login into the app");
 			return response;
 		}
-
+		log.info("Update transaction request started for session id:" + headers.get("session-id"));
 		Float txnAmount = transactionDetails.getTransactionAmount();
 		if(txnAmount == null || txnAmount.isNaN() || txnAmount == 0.0)
 		{
 			response.setResponseMessage("Invalid Details. Transaction amount cannot be null or empty or zero.");
+			log.info("Update transaction request finished for session id:" + headers.get("session-id"));
 			return response;
 		}
 		
@@ -48,6 +51,7 @@ public class UpdateTransactionServiceImpl implements UpdateTransactionService
 			if(!headers.get("session-id").equals(customer.getSessionDetails().getSessionId()))
 			{
 				response.setResponseMessage("Invalid session-id. To get seesion-id, please login into the app");
+				log.info("Update transaction request finished for session id:" + headers.get("session-id"));
 				return response;
 			}
 			
@@ -79,11 +83,13 @@ public class UpdateTransactionServiceImpl implements UpdateTransactionService
 			
 			response.setEarnedRewardPoints(newRewardsPoints);
 			response.setRewardPointBalance(updatedRewardPoints);
+			log.info("Update transaction request finished for session id:" + headers.get("session-id"));
 			return response;
 		}
 		else
 		{
 			response.setResponseMessage("No session found for this user. To get seesion-id, please login into the app");
+			log.info("Update transaction request finished for session id:" + headers.get("session-id"));
 			return response;
 		}
 

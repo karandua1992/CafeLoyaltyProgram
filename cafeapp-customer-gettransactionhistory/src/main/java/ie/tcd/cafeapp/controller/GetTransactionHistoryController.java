@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ie.tcd.cafeapp.service.GetTransactionHistoryService;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/cafeapp")
+@Slf4j
 public class GetTransactionHistoryController 
 {
 
@@ -22,6 +24,7 @@ public class GetTransactionHistoryController
 	@PostMapping("/gettransactionhistory")
 	public ResponseEntity<?> getVoucherDetails(@RequestHeader Map<String, String> headers)
 	{
+		log.info("Get transaction details request received for session id:" + headers.get("session-id"));
 		return ResponseEntity.ok(getTransactionHistoryService.getTransactionHistory(headers));
 	}
 

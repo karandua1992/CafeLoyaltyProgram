@@ -11,9 +11,11 @@ import ie.tcd.cafeapp.collection.Customer;
 import ie.tcd.cafeapp.collection.ResponsePojo;
 import ie.tcd.cafeapp.collection.Session;
 import ie.tcd.cafeapp.repository.LoginRepository;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Service
+@Slf4j
 public class LoginServiceImpl implements LoginService 
 {
 	@Autowired
@@ -24,17 +26,20 @@ public class LoginServiceImpl implements LoginService
 	{
 		ResponsePojo response = new ResponsePojo();
 
+		log.info("Login request started for username:" + credentials.getUsername());
+		
 		if(credentials.getUsername() == null || credentials.getUsername().isEmpty())
 		{
+			log.info("Login request finished for username:" + credentials.getUsername());
 			response.setResponseMessage("Invalid Credentials. Username cannot be empty");
 			return response;
 		}
 		if(credentials.getPassword() == null || credentials.getPassword().isEmpty())
 		{
+			log.info("Login request finished for username:" + credentials.getUsername());
 			response.setResponseMessage("Invalid Credentials. Password cannot be empty");
 			return response;
 		}
-
 
 		List<Customer> opCustomer = logiRepository.findByUsername(credentials.getUsername());
 
@@ -50,10 +55,12 @@ public class LoginServiceImpl implements LoginService
 				logiRepository.save(customer);
 
 				response.setResponseMessage("Your session-id is:" + uuid.toString());
+				log.info("Login request finished for username:" + credentials.getUsername());
 				return response;
 			}
 			else
 			{
+				log.info("Login request finished for username:" + credentials.getUsername());
 				response.setResponseMessage("Invalid Credentials. Password does not match");
 				return response;
 			}
@@ -61,6 +68,7 @@ public class LoginServiceImpl implements LoginService
 		}
 		else
 		{
+			log.info("Login request finished for username:" + credentials.getUsername());
 			response.setResponseMessage("User not found");
 			return response;
 		}

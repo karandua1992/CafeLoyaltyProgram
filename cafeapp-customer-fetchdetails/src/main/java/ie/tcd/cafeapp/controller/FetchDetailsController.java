@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ie.tcd.cafeapp.service.FetchDetailsService;
+import lombok.extern.slf4j.Slf4j;
 
 
 @RestController
 @RequestMapping("/cafeapp")
+@Slf4j
 public class FetchDetailsController 
 {
 	@Autowired
@@ -22,6 +24,7 @@ public class FetchDetailsController
 	@PostMapping("/fetchdetails")
 	public ResponseEntity<?> fetchDetails(@RequestHeader Map<String, String> headers)
 	{
+		log.info("Fetch details request received for session id:" + headers.get("session-id"));
 		return ResponseEntity.ok(fetchDetailsService.getCustomerDetails(headers));
 	}
 

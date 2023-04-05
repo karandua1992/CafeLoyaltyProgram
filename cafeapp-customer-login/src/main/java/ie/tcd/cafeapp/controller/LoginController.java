@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ie.tcd.cafeapp.collection.CredentialsPojo;
 import ie.tcd.cafeapp.service.LoginService;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/cafeapp")
+@Slf4j
 public class LoginController 
 {
 	@Autowired
@@ -20,6 +22,7 @@ public class LoginController
 	@PostMapping("/login")
 	public ResponseEntity<?> cutomerLogin(@RequestBody CredentialsPojo credentials)
 	{
+		log.info("Login request received for username:" + credentials.getUsername());
 		return ResponseEntity.ok(loginService.validateCredentials(credentials));
 	}
 }

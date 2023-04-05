@@ -13,8 +13,10 @@ import ie.tcd.cafeapp.collection.RedeemVoucherPojo;
 import ie.tcd.cafeapp.collection.ResponsePojo;
 import ie.tcd.cafeapp.collection.VoucherDetails;
 import ie.tcd.cafeapp.repository.RedeemVoucherRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 
 	@Autowired
@@ -32,17 +34,19 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 			response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
 			return response;
 		}
-		
+		log.info("Redeem Voucher request started for session id:" + headers.get("session-id"));
 		if(transactionDetails.getTransactionAmount() == null)
 		{
 			response.setResponseMessage("Invalid Details. Transaction amount cannot be empty.");
 			response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
+			log.info("Redeem Voucher request finished for session id:" + headers.get("session-id"));
 			return response;
 		}
 		else if(transactionDetails.getTransactionAmount() == 0)
 		{
 			response.setResponseMessage("Invalid Details. Transaction amount cannot be 0.");
 			response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
+			log.info("Redeem Voucher request finished for session id:" + headers.get("session-id"));
 			return response;
 		}
 		
@@ -50,6 +54,7 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 		{
 			response.setResponseMessage("Invalid Details. Vocuher code cannot be empty.");
 			response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
+			log.info("Redeem Voucher request finished for session id:" + headers.get("session-id"));
 			return response;
 		}
 
@@ -63,6 +68,7 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 			{
 				response.setResponseMessage("Invalid session-id. To get seesion-id, please login into the app");
 				response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
+				log.info("Redeem Voucher request finished for session id:" + headers.get("session-id"));
 				return response;
 			}
 			
@@ -70,6 +76,7 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 			{
 				response.setResponseMessage("Customer does not have a voucher.");
 				response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
+				log.info("Redeem Voucher request finished for session id:" + headers.get("session-id"));
 				return response;
 			}
 			
@@ -95,6 +102,7 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 				{
 					response.setResponseMessage("Voucher amount is greater than or equal to billing amount. Please try a differet voucher.");
 					response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
+					log.info("Redeem Voucher request finished for session id:" + headers.get("session-id"));
 					return response;
 				}
 				
@@ -104,6 +112,7 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 				{
 					response.setResponseMessage("This voucher has expired. Please try a differet voucher.");
 					response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
+					log.info("Redeem Voucher request finished for session id:" + headers.get("session-id"));
 					return response;
 				}
 				
@@ -122,12 +131,14 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 				redeemVocuherRepository.save(customer);
 				response.setFinalBalanceAmount(remainingBalance);
 				response.setResponseMessage("Voucher has been successfully applied.");
+				log.info("Redeem Voucher request finished for session id:" + headers.get("session-id"));
 				return response;
 			}
 			else
 			{
 				response.setResponseMessage("This is not a valid voucher. Please check vocuher details and try again.");
 				response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
+				log.info("Redeem Voucher request finished for session id:" + headers.get("session-id"));
 				return response;
 			}
 			
@@ -135,6 +146,7 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 		else
 		{
 			response.setResponseMessage("No session found for this user. To get seesion-id, please login into the app");
+			log.info("Redeem Voucher request finished for session id:" + headers.get("session-id"));
 			return response;
 		}
 

@@ -10,8 +10,10 @@ import ie.tcd.cafeapp.collection.Customer;
 import ie.tcd.cafeapp.collection.LoginDetails;
 import ie.tcd.cafeapp.collection.ResponsePojo;
 import ie.tcd.cafeapp.repository.CustomerRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class CreateCustomerServiceImpl implements CreateCustomerService 
 {
 	@Autowired
@@ -24,15 +26,16 @@ public class CreateCustomerServiceImpl implements CreateCustomerService
 		LoginDetails credentials = new LoginDetails();
 		ResponsePojo response = new ResponsePojo();
 		
-		
 		if(customer == null)
 		{
 			response.setResponseMessage("Invalid Details. Mandatory paramteres are empty");
 			return response;
 		}
+		log.info("Customer creation finished for:" + customer.getLoginCredentials().getUsername());
 		
 		if(checkUsernameExists(customer))
 		{
+			log.info("Customer creation finished");
 			response.setResponseMessage("Invalid Details. Username already exists");
 			return response;
 		}
@@ -43,6 +46,7 @@ public class CreateCustomerServiceImpl implements CreateCustomerService
 		}
 		else
 		{
+			log.info("Customer creation finished");
 			response.setResponseMessage("Invalid Details. First name cannot be empty");
 			return response;
 		}
@@ -59,6 +63,7 @@ public class CreateCustomerServiceImpl implements CreateCustomerService
 		}
 		else
 		{
+			log.info("Customer creation finished");
 			response.setResponseMessage("Invalid Details. Username cannot be empty");
 			return response;
 		}
@@ -69,6 +74,7 @@ public class CreateCustomerServiceImpl implements CreateCustomerService
 		}
 		else
 		{
+			log.info("Customer creation finished");
 			response.setResponseMessage("Invalid Details. Password cannot be empty");
 			return response;
 		}
@@ -84,12 +90,14 @@ public class CreateCustomerServiceImpl implements CreateCustomerService
 			response.setResponseMessage("Dear " + newCustomer.getFirstName() + " " + newCustomer.getLastName() + ", "
 					+ "You have successfully joined our Loyalty Customer Program. "
 					+ "Your Username is: " + newCustomer.getLoginCredentials().getUsername() + " and your membership id is: " + membershipId);
+			log.info("Customer creation finished");
 			return response;
 		}
 		else
 		{
 			response.setResponseMessage("Some error occured. Please try later.");
 		}
+		log.info("Customer creation finished");
 		return response;
 	}
 

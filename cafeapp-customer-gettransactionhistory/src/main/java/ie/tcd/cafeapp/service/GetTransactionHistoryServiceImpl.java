@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import ie.tcd.cafeapp.collection.Customer;
 import ie.tcd.cafeapp.collection.ResponsePojo;
 import ie.tcd.cafeapp.repository.GetTransactionRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class GetTransactionHistoryServiceImpl implements GetTransactionHistoryService 
 {
 
@@ -29,6 +31,7 @@ public class GetTransactionHistoryServiceImpl implements GetTransactionHistorySe
 			return response;
 		}
 
+		log.info("Get transaction history request started for session id:" + headers.get("session-id"));
 		List<Customer> opCustomer = getTransactionHistoryRepository.findBySessionDetails(headers.get("session-id"));
 		
 		if(opCustomer != null && !opCustomer.isEmpty())
@@ -37,6 +40,7 @@ public class GetTransactionHistoryServiceImpl implements GetTransactionHistorySe
 
 			if(!headers.get("session-id").equals(customer.getSessionDetails().getSessionId()))
 			{
+				log.info("Get transaction history request started for session id:" + headers.get("session-id"));
 				response.setResponseMessage("Invalid session-id. To get seesion-id, please login into the app");
 				return response;
 			}
@@ -47,12 +51,13 @@ public class GetTransactionHistoryServiceImpl implements GetTransactionHistorySe
 			response.setTransactionHistory(customer.getTransactionHistory());
 			
 			response.setUsername(customer.getLoginCredentials().getUsername());
-			
+			log.info("Get transaction history request finished for session id:" + headers.get("session-id"));
 			return response;
 
 		}
 		else
 		{
+			log.info("Get transaction history request finished for session id:" + headers.get("session-id"));
 			response.setResponseMessage("No session found for this user. To get seesion-id, please login into the app");
 			return response;
 		}

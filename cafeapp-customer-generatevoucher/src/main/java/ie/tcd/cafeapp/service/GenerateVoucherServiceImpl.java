@@ -13,7 +13,9 @@ import ie.tcd.cafeapp.collection.Customer;
 import ie.tcd.cafeapp.collection.ResponsePojo;
 import ie.tcd.cafeapp.collection.VoucherDetails;
 import ie.tcd.cafeapp.repository.GenerateVoucherRepository;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class GenerateVoucherServiceImpl implements GenerateVoucherService 
 {
@@ -31,7 +33,7 @@ public class GenerateVoucherServiceImpl implements GenerateVoucherService
 			response.setResponseMessage("Invalid Details. Session-id cannot be empty. To get seesion-id, please login into the app");
 			return response;
 		}
-
+		log.info("Vocuher genreation request started for session id:" + headers.get("session-id"));
 		List<Customer> opCustomer = generateVoucherRepository.findBySessionDetails(headers.get("session-id"));
 		
 		if(opCustomer != null && !opCustomer.isEmpty())
@@ -40,6 +42,7 @@ public class GenerateVoucherServiceImpl implements GenerateVoucherService
 
 			if(!headers.get("session-id").equals(customer.getSessionDetails().getSessionId()))
 			{
+				log.info("Vocuher genreation request started for session id:" + headers.get("session-id"));
 				response.setResponseMessage("Invalid session-id. To get seesion-id, please login into the app");
 				return response;
 			}
@@ -53,6 +56,7 @@ public class GenerateVoucherServiceImpl implements GenerateVoucherService
 				response.setUsername(customer.getLoginCredentials().getUsername());
 				response.setRemainingRewardPoints(currentRewardPoints);
 				response.setResponseMessage("You do not have enough reward points balance to generate a voucher");
+				log.info("Vocuher genreation request started for session id:" + headers.get("session-id"));
 				return response;
 			}
 			else
@@ -97,12 +101,13 @@ public class GenerateVoucherServiceImpl implements GenerateVoucherService
 				customer.setVoucher(vouchersList);
 
 				generateVoucherRepository.save(customer);
-
+				log.info("Vocuher genreation request finished for session id:" + headers.get("session-id"));
 				return response;
 			}
 		}
 		else
 		{
+			log.info("Vocuher genreation request finished for session id:" + headers.get("session-id"));
 			response.setResponseMessage("No session found for this user. To get seesion-id, please login into the app");
 			return response;
 		}

@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ie.tcd.cafeapp.service.GetVoucherDetailsService;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/cafeapp")
+@Slf4j
 public class GetVoucherDetailsController 
 {
 	@Autowired
@@ -21,6 +23,7 @@ public class GetVoucherDetailsController
 	@PostMapping("/getvoucherdetails")
 	public ResponseEntity<?> getVoucherDetails(@RequestHeader Map<String, String> headers)
 	{
+		log.info("Get voucher request received for session id:" + headers.get("session-id"));
 		return ResponseEntity.ok(getVoucherDetailsService.getVocuherDetails(headers));
 	}
 }
