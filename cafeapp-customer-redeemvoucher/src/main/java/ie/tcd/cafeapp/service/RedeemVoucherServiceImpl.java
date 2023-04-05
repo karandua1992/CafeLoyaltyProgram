@@ -1,16 +1,25 @@
 package ie.tcd.cafeapp.service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import ie.tcd.cafeapp.collection.AddTransactionPojo;
 import ie.tcd.cafeapp.collection.Customer;
 import ie.tcd.cafeapp.collection.RedeemVoucherPojo;
 import ie.tcd.cafeapp.collection.ResponsePojo;
+import ie.tcd.cafeapp.collection.UpdateTransactionResponsePojo;
 import ie.tcd.cafeapp.collection.VoucherDetails;
 import ie.tcd.cafeapp.repository.RedeemVoucherRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +30,10 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 
 	@Autowired
 	private RedeemVoucherRepository redeemVocuherRepository;
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	
 	
 	@Override
 	public ResponsePojo redeemVoucher(RedeemVoucherPojo transactionDetails, Map<String, String> headers) 
@@ -128,11 +141,44 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 					}
 				}
 				
-				redeemVocuherRepository.save(customer);
-				response.setFinalBalanceAmount(remainingBalance);
-				response.setResponseMessage("Voucher has been successfully applied.");
-				log.info("Redeem Voucher request finished for session id:" + headers.get("session-id"));
-				return response;
+				AddTransactionPojo updateTxn = new AddTransactionPojo();
+				updateTxn.setTransactionAmount(remainingBalance.floatValue());
+				
+				HttpHeaders updateHeaders = new HttpHeaders();
+
+				updateHeaders.setContentType(MediaType.APPLICATION_JSON);
+				updateHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+				updateHeaders.add("session-id", headers.get("session-id"));
+
+				HttpEntity<AddTransactionPojo> requestEntity = new HttpEntity<AddTransactionPojo>(updateTxn, updateHeaders);
+				log.info("==========================Update Txn request:" + requestEntity);
+				
+				ResponseEntity<UpdateTransactionResponsePojo> updatTransactionResponse = restTemplate.postForEntity("http://CAFEAPP-CUSTOMER-UPDATETRANSACTION/cafeapp/upatetransaction", requestEntity, UpdateTransactionResponsePojo.class);
+
+				
+				if (updatTransactionResponse.getStatusCode() == HttpStatus.OK) 
+				{
+					log.info("==========================Update Txn response:" + updatTransactionResponse);
+					
+					Customer updatedCustomer = redeemVocuherRepository.findById(customer.getMembershipId()).get();
+					
+					customer.setTransactionHistory(updatedCustomer.getTransactionHistory());
+					
+					redeemVocuherRepository.save(customer);
+					response.setFinalBalanceAmount(remainingBalance);
+					response.setResponseMessage("Voucher has been successfully applied.");
+					log.info("Redeem Voucher request finished for session id:" + headers.get("session-id"));
+					return response;    
+				} 
+				else 
+				{
+					response.setFinalBalanceAmount(transactionDetails.getTransactionAmount());
+					response.setResponseMessage("Failed to update transaction. Please try after some time.");
+					log.info("Redeem Voucher request finished for session id:" + headers.get("session-id"));
+					return response;    
+				}
+				
+				
 			}
 			else
 			{
