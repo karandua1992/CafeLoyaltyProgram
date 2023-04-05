@@ -47,7 +47,6 @@ public class UpdateTransactionServiceImpl implements UpdateTransactionService
 		if(opCustomer != null && !opCustomer.isEmpty())
 		{
 			Customer  customer = opCustomer.get(0);
-			log.info("==========================Customer session:"+customer.getSessionDetails().getSessionId());
 			if(!headers.get("session-id").equals(customer.getSessionDetails().getSessionId()))
 			{
 				response.setResponseMessage("Invalid session-id. To get seesion-id, please login into the app");
@@ -78,10 +77,7 @@ public class UpdateTransactionServiceImpl implements UpdateTransactionService
 			
 			customer.setTransactionHistory(txnHist);
 			
-			log.info("==========================Setting txn:"+txnHist);
-			
 			updateTransactionRepository.save(customer);
-			log.info("==========================txn updated");
 			
 			response.setResponseMessage("Transaction updated successfully.");
 			

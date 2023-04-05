@@ -151,15 +151,12 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 				updateHeaders.add("session-id", headers.get("session-id"));
 
 				HttpEntity<AddTransactionPojo> requestEntity = new HttpEntity<AddTransactionPojo>(updateTxn, updateHeaders);
-				log.info("==========================Update Txn request:" + requestEntity);
 				
 				ResponseEntity<UpdateTransactionResponsePojo> updatTransactionResponse = restTemplate.postForEntity("http://CAFEAPP-CUSTOMER-UPDATETRANSACTION/cafeapp/upatetransaction", requestEntity, UpdateTransactionResponsePojo.class);
 
 				
 				if (updatTransactionResponse.getStatusCode() == HttpStatus.OK) 
 				{
-					log.info("==========================Update Txn response:" + updatTransactionResponse);
-					
 					Customer updatedCustomer = redeemVocuherRepository.findById(customer.getMembershipId()).get();
 					
 					customer.setTransactionHistory(updatedCustomer.getTransactionHistory());
