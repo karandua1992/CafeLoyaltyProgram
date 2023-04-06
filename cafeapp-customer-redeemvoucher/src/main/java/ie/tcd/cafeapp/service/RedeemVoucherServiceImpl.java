@@ -164,6 +164,22 @@ public class RedeemVoucherServiceImpl implements RedeemVoucherService {
 					redeemVocuherRepository.save(customer);
 					response.setFinalBalanceAmount(remainingBalance);
 					response.setResponseMessage("Voucher has been successfully applied.");
+					
+					try 
+					{
+						log.info("Cache update started for session id:" + headers.get("session-id"));
+						
+						HttpEntity<Customer> requestEntityForCache = new HttpEntity<Customer>(customer);
+						
+						restTemplate.postForEntity("http://CAFEAPP-CUSTOMER-FETCHDETAILS/cafeapp/updateCache", requestEntityForCache, String.class);
+						
+						log.info("Cache update finished for session id:" + headers.get("session-id"));
+					}
+					catch(Exception e)
+					{
+						log.info("Cache update failed for session id:" + headers.get("session-id"));
+					}
+					
 					log.info("Redeem Voucher request finished for session id:" + headers.get("session-id"));
 					return response;    
 				} 

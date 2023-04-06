@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import ie.tcd.cafeapp.collection.Customer;
 import ie.tcd.cafeapp.collection.ResponsePojo;
@@ -19,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class GenerateVoucherServiceImpl implements GenerateVoucherService 
 {
+	@Autowired
+	private RestTemplate restTemplate;
 
 	@Autowired
 	private GenerateVoucherRepository generateVoucherRepository;
@@ -101,6 +105,22 @@ public class GenerateVoucherServiceImpl implements GenerateVoucherService
 				customer.setVoucher(vouchersList);
 
 				generateVoucherRepository.save(customer);
+				
+				try 
+				{
+					log.info("Cache update started for session id:" + headers.get("session-id"));
+					
+					HttpEntity<Customer> requestEntityForCache = new HttpEntity<Customer>(customer);
+					
+					restTemplate.postForEntity("http://CAFEAPP-CUSTOMER-FETCHDETAILS/cafeapp/updateCache", requestEntityForCache, String.class);
+					
+					log.info("Cache update finished for session id:" + headers.get("session-id"));
+				}
+				catch(Exception e)
+				{
+					log.info("Cache update failed for session id:" + headers.get("session-id"));
+				}
+				
 				log.info("Vocuher genreation request finished for session id:" + headers.get("session-id"));
 				return response;
 			}

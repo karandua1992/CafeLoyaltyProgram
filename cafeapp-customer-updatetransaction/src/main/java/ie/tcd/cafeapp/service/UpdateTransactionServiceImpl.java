@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import ie.tcd.cafeapp.collection.AddTransactionPojo;
 import ie.tcd.cafeapp.collection.Customer;
@@ -20,6 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 public class UpdateTransactionServiceImpl implements UpdateTransactionService 
 {
 	
+	@Autowired
+	private RestTemplate restTemplate;
+
 	@Autowired
 	private UpdateTransactionRepository updateTransactionRepository;
 	
@@ -83,6 +88,43 @@ public class UpdateTransactionServiceImpl implements UpdateTransactionService
 			
 			response.setEarnedRewardPoints(newRewardsPoints);
 			response.setRewardPointBalance(updatedRewardPoints);
+			
+			try 
+			{
+				if (customer.getTransactionHistory() != null) 
+				{
+					int count = 1;
+					for(TransactionHistory txn : customer.getTransactionHistory())
+					{
+						LocalDateTime txnTime = LocalDateTime.parse(txn.getDate());
+						LocalDateTime now = LocalDateTime.now();
+				    	LocalDateTime oneMonthAgo = now.minusMonths(1);;
+
+						if(txnTime.isAfter(oneMonthAgo) && txnTime.isBefore(now))
+						{
+							count++;
+						}
+					}
+					if(count > 10)
+					{
+						log.info("Cache update started for session id:" + headers.get("session-id"));
+						
+						HttpEntity<Customer> requestEntityForCache = new HttpEntity<Customer>(customer);
+						
+						restTemplate.postForEntity("http://CAFEAPP-CUSTOMER-FETCHDETAILS/cafeapp/updateCache", requestEntityForCache, String.class);
+						
+						log.info("Cache update finished for session id:" + headers.get("session-id"));
+						
+					}
+				}
+
+			}
+			catch(Exception e)
+			{
+				log.info("Cache update failed for session id:" + headers.get("session-id"));
+				e.printStackTrace();
+			}
+			
 			log.info("Update transaction request finished for session id:" + headers.get("session-id"));
 			return response;
 		}
