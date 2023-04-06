@@ -122,7 +122,6 @@ public class UpdateTransactionServiceImpl implements UpdateTransactionService
 			catch(Exception e)
 			{
 				log.info("Cache update failed for session id:" + headers.get("session-id"));
-				e.printStackTrace();
 			}
 			
 			log.info("Update transaction request finished for session id:" + headers.get("session-id"));
